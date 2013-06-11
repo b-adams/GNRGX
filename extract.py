@@ -51,10 +51,10 @@ def process_file(filename, asList, whereToWrite):
         for coord1, coord2, energy in coord_finder(filename):
             whereToWrite.write(str(coord1)+" "+str(coord2)+" "+str(energy)+"\n")
     else:
-        print "CSV output not yet supported"
         dataset = defaultdict(dict)
         rows = defaultdict(int)
         cols = defaultdict(int)
+
 
         for coord1, coord2, energy in coord_finder(filename):
             rowname = str(coord2)
@@ -62,20 +62,21 @@ def process_file(filename, asList, whereToWrite):
             cols[colname] +=1
             rows[rowname] +=1
             dataset[rowname][colname] = str(energy)
+
+        #using leading space to force it to sort to the beginning of the dictionary
+        cols[" COORD"] = 0;
+        for rowname in dataset:
+            dataset[rowname][" COORD"]=rowname
+
         colnames = sorted(cols)
         rownames = sorted(rows)
 
-        print colnames
-        print rownames
-        
-        cwriter = csv.DictWriter(whereToWrite, dialect='excel', fieldnames=colnames, 
+        cwriter = csv.DictWriter(whereToWrite, dialect='excel', fieldnames=colnames,
                                  delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         cwriter.writeheader()
-#        cwriter.writerow(dict((x, x) for x in colnames)) #Write headers
         for row in rownames:
             cwriter.writerow(dataset[row])
         
-        print "CSV output attempted"
 
 def main():
     parser = argparse.ArgumentParser(description='Process log file to CSV table')
