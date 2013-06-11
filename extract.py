@@ -65,8 +65,8 @@ def process_file(filename, asList, whereToWrite):
 
         #using leading space to force it to sort to the beginning of the dictionary
         cols[" COORD"] = 0;
-        for rowname in dataset:
-            dataset[rowname][" COORD"]=rowname
+        for rowname, column in dataset.iteritems():
+            column[" COORD"]=rowname
 
         colnames = sorted(cols)
         rownames = sorted(rows)
